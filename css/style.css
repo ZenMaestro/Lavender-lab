@@ -1,0 +1,354 @@
+/* ... (keep all the existing styles from the previous step) ... */
+
+/* =========================
+   NEW: PAGE ROUTING STYLES
+========================== */
+.page {
+  display: none; /* Hide all pages by default */
+}
+
+.page.active {
+  display: block; /* Show the active page */
+  animation: fadeIn 0.5s ease-in-out; /* Add a fade-in effect */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Style for the active navigation link */
+.nav a.active-link {
+  color: var(--lav-200);
+  font-weight: 700;
+}
+
+
+/* =========================
+   THEME, FONTS & BASE STYLES
+========================== */
+:root {
+  --lav-500: #8b5cf6;
+  --lav-600: #7c3aed;
+  --lav-200: #ddd6fe;
+  --ink: #111827;
+  --card-bg: rgba(26, 27, 46, 0.7); /* Semi-transparent for glass effect */
+  --border: rgba(255, 255, 255, 0.15);
+  --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.25);
+  --radius-xl: 16px;
+  --fast: 200ms;
+  --normal: 300ms;
+}
+
+body {
+  margin: 0;
+  color: #e5e7eb;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: radial-gradient(1200px 800px at 10% 10%, var(--lav-600), transparent 60%),
+              radial-gradient(1000px 900px at 90% 20%, #4f46e5, transparent 60%),
+              linear-gradient(135deg, #0b0c1a, #15172e 40%, #1d2143);
+  background-size: 200% 200%;
+  background-attachment: fixed;
+  animation: bgMove 18s ease-in-out infinite;
+}
+
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container {
+  max-width: 700px; /* Made container slightly smaller for single-column focus */
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* =========================
+   NAV
+========================== */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 16, 32, 0.6);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+.logo {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: conic-gradient(from 180deg, var(--lav-200), var(--lav-600), var(--lav-200));
+  animation: spin 14s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.nav-links {
+  display: flex;
+  gap: 8px;
+}
+.nav a {
+  color: #fff; text-decoration: none; opacity: .85;
+  padding: 8px 12px; border-radius: 8px;
+  transition: all var(--fast);
+}
+.nav a:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   CARDS & FORMS (no hero)
+========================== */
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  margin-top: 32px;
+}
+.section-title h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  background: linear-gradient(90deg, var(--lav-200), #fff);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.form { display: grid; gap: 16px; }
+.row { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 700px) { .row { grid-template-columns: repeat(2, 1fr); } }
+label { font-size: 14px; color: var(--lav-200); display: block; margin-bottom: 6px; }
+.input, .select, .textarea {
+  width: 100%; color: #fff; background: rgba(12, 13, 28, 0.8); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px; outline: none; box-sizing: border-box;
+  font-size: 15px; font-family: 'Inter', sans-serif;
+  transition: border-color var(--normal), box-shadow var(--normal);
+}
+.input:focus, .select:focus, .textarea:focus {
+  border-color: var(--lav-500);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25), inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+.textarea { min-height: 100px; resize: vertical; }
+.form-buttons { justify-content: flex-start; }
+.btn {
+  appearance: none; border: 1px solid var(--border); border-radius: 999px; padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer;
+  font-weight: 500; font-size: 15px; text-decoration: none;
+  transition: all var(--fast) ease-out;
+}
+.btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+.btn.primary {
+  background: linear-gradient(135deg, var(--lav-500), var(--lav-600));
+  border-color: transparent;
+}
+.results-box {
+  margin-top: 16px; padding: 15px; border-radius: 10px;
+  background: rgba(12, 13, 28, 0.8); min-height: 120px;
+  white-space: pre-line;
+  font-size: 14px; text-align: left;
+  line-height: 1.6;
+  border: 1px solid var(--border);
+  transition: background-color var(--normal);
+}
+.footer { opacity: .7; font-size: 12px; padding: 48px 0; text-align: center; }
+/* =========================
+   PAGE ROUTING STYLES
+========================== */
+.page { display: none; }
+.page.active {
+  display: block;
+  animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.nav a.active-link { color: var(--lav-200); font-weight: 700; }
+
+/* =========================
+   THEME, FONTS & BASE STYLES
+========================== */
+:root {
+  --lav-500: #8b5cf6;
+  --lav-600: #7c3aed;
+  --lav-200: #ddd6fe;
+  --card-bg: rgba(26, 27, 46, 0.7);
+  --border: rgba(255, 255, 255, 0.15);
+  --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.35);
+  --radius-xl: 16px;
+  --fast: 200ms;
+  --normal: 300ms;
+}
+body {
+  margin: 0;
+  color: #e5e7eb;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: radial-gradient(1200px 800px at 10% 10%, var(--lav-600), transparent 60%),
+              radial-gradient(1000px 900px at 90% 20%, #4f46e5, transparent 60%),
+              linear-gradient(135deg, #0b0c1a, #15172e 40%, #1d2143);
+  background-size: 200% 200%;
+  background-attachment: fixed;
+  animation: bgMove 18s ease-in-out infinite;
+}
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* =========================
+   NAV
+========================== */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 16, 32, 0.6);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+.brand {
+  display: flex; align-items: center; gap: 12px; font-weight: 700;
+  color: #fff; text-decoration: none;
+}
+.logo {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: conic-gradient(from 180deg, var(--lav-200), var(--lav-600), var(--lav-200));
+  animation: spin 14s linear infinite;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.nav-links { display: flex; gap: 8px; }
+.nav a {
+  color: #fff; text-decoration: none; opacity: .85;
+  padding: 8px 12px; border-radius: 8px;
+  transition: all var(--fast);
+}
+.nav a:hover { opacity: 1; background-color: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+
+/* =========================
+   HERO SECTION (RESTORED)
+========================== */
+.hero { text-align: center; padding: 60px 24px; }
+.h1 {
+  font-size: clamp(32px, 5vw, 54px); line-height: 1.1; letter-spacing: -0.02em;
+  margin: 0 auto; max-width: 900px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.h1 em { color: var(--lav-200); font-style: normal; }
+.sub { margin: 16px auto 0; max-width: 780px; opacity: .9; font-size: 18px; }
+.cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+
+/* =========================
+   CARDS & FORMS
+========================== */
+.card {
+  max-width: 700px; /* Constrain the width of the form cards */
+  margin: 32px auto 0; /* Center the card on its page */
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+/* ... Other card, form, button, and footer styles remain the same ... */
+.section-title h2 { margin: 0 0 16px; font-size: 24px; background: linear-gradient(90deg, var(--lav-200), #fff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.form { display: grid; gap: 16px; }
+.row { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 700px) { .row { grid-template-columns: repeat(2, 1fr); } }
+label { font-size: 14px; color: var(--lav-200); display: block; margin-bottom: 6px; }
+.input, .select, .textarea { width: 100%; color: #fff; background: rgba(12, 13, 28, 0.8); border: 1px solid var(--border); border-radius: 10px; padding: 12px; outline: none; box-sizing: border-box; font-size: 15px; font-family: 'Inter', sans-serif; transition: border-color var(--normal), box-shadow var(--normal); }
+.input:focus, .select:focus, .textarea:focus { border-color: var(--lav-500); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25), inset 0 0 0 1px rgba(255,255,255,0.1); }
+.textarea { min-height: 100px; resize: vertical; }
+.form-buttons { justify-content: flex-start; }
+.btn { appearance: none; border: 1px solid var(--border); border-radius: 999px; padding: 12px 20px; background: rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer; font-weight: 500; font-size: 15px; text-decoration: none; transition: all var(--fast) ease-out; }
+.btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: var(--shadow-lg); background-color: rgba(255, 255, 255, 0.15); }
+.btn.primary { background: linear-gradient(135deg, var(--lav-500), var(--lav-600)); border-color: transparent; }
+.results-box { margin-top: 16px; padding: 15px; border-radius: 10px; background: rgba(12, 13, 28, 0.8); min-height: 120px; white-space: pre-line; font-size: 14px; text-align: left; line-height: 1.6; border: 1px solid var(--border); transition: background-color var(--normal); }
+.footer { opacity: .7; font-size: 12px; padding: 48px 0; text-align: center; }
+/* =======================================
+   CUSTOM DROPDOWN STYLES
+========================================== */
+
+/* 1. The Wrapper: This creates the styled box and positions the arrow */
+.select-wrapper {
+  position: relative;
+  background-color: rgba(12, 13, 28, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color var(--normal), box-shadow var(--normal);
+}
+
+/* 2. The Custom Arrow: Added using a pseudo-element */
+.select-wrapper::after {
+  content: '▾'; /* A simple down-arrow character */
+  font-size: 20px;
+  color: var(--lav-200);
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  pointer-events: none; /* IMPORTANT: This lets you click "through" the arrow to the select box */
+}
+
+/* 3. The Select Element Itself: We make it transparent and remove the default arrow */
+.select {
+  /* Remove default browser appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* Make it fill the wrapper */
+  width: 100%;
+  
+  /* Reset styles that might interfere */
+  background: transparent;
+  border: none;
+  margin: 0;
+  
+  /* Add back padding and text color */
+  padding: 12px 40px 12px 12px; /* Add extra padding-right for the arrow */
+  color: #fff;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+}
+
+/* 4. The Options inside the dropdown panel */
+.select option {
+  background: #2d304d; /* A dark background for the options panel */
+  color: #fff;
+}
+
+/* 5. The Focus State: Apply the glow to the wrapper when the select is focused */
+.select-wrapper:focus-within {
+  border-color: var(--lav-500);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25);
+}
+
+/* 6. Remove the default focus outline from the select itself, since the wrapper handles it */
+.select:focus {
+  outline: none;
+}

@@ -1,0 +1,5 @@
+﻿# Ignore Node.js dependency folder
+backend/node_modules/
+
+# Ignore secrets file
+backend/.env
