@@ -1,4 +1,4 @@
-// server.js (Updated with the correct model name)
+// server.js (Updated with a health check endpoint)
 
 import express from "express";
 import fetch from "node-fetch";
@@ -10,7 +10,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ==========================================================
+// NEW: Health Check Endpoint for Uptime Robot
+// This will respond with a "200 OK" status when visited.
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+// ==========================================================
+
 app.post("/generate", async (req, res) => {
+  // ... (The rest of your file stays exactly the same) ...
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -21,8 +30,6 @@ app.post("/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
     
-    // --- THIS LINE IS THE FIX ---
-    // Changed 'gemini-pro' to the newer 'gemini-1.5-flash-latest'
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
     const response = await fetch(apiUrl, {
@@ -42,7 +49,6 @@ app.post("/generate", async (req, res) => {
         return res.status(500).json({ error: data.error.message });
     }
 
-    // --- ADDED CHECK for empty candidates array to prevent crashes ---
     if (!data.candidates || data.candidates.length === 0) {
         console.error("🔴 API responded but with no candidates. This could be a safety block.");
         return res.status(500).json({ error: "The model did not return a response. This might be due to a safety filter." });
