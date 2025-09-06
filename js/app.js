@@ -90,7 +90,10 @@ async function getSuggestions(type) {
   outputBox.innerText = "🧠 Generating ideas...";
 
   try {
-    const response = await fetch("http://localhost:5000/generate", {
+    // ==========================================================
+    // THIS IS THE IMPORTANT CHANGE
+    // ==========================================================
+    const response = await fetch("https://lavender-lab-backend.onrender.com/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
