@@ -93,7 +93,7 @@ async function getSuggestions(type) {
     // ==========================================================
     // THIS IS THE IMPORTANT CHANGE
     // ==========================================================
-    const response = await fetch("https://lavender-lab-backend.onrender.com/generate", {
+   const response = await fetch("https://lavender-lab1.onrender.com/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
