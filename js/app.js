@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach form submit listeners
     document.getElementById('yt-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('yt'); });
     document.getElementById('ig-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('ig'); });
+    document.getElementById('li-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('li'); }); // NEW
+    document.getElementById('blog-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('blog'); }); // NEW
 
     // Attach clear history button listener
     document.getElementById('clear-history').addEventListener('click', clearHistory);
@@ -28,13 +30,11 @@ function handleRouteChange() {
     else document.getElementById('page-home').classList.add('active');
 
     document.querySelectorAll('.nav a').forEach(link => {
-        // Handle brand link separately
         const linkHash = link.classList.contains('brand') ? '#home' : link.getAttribute('href');
         if (linkHash === hash) link.classList.add('active-link');
         else link.classList.remove('active-link');
     });
     
-    // If we navigate to the history page, render the history
     if (hash === '#history') {
         renderHistory();
     }
@@ -42,27 +42,41 @@ function handleRouteChange() {
 
 // --- API CALL LOGIC ---
 async function getSuggestions(type) {
-    let topic, audience, tone, notes, goal, outputContainer, prompt;
+    let topic, audience, tone, notes, goal, keywords, outputContainer, prompt;
 
+    // Determine the type and get the correct inputs and output container
     if (type === 'yt') {
         topic = document.getElementById('yt-topic').value;
         audience = document.getElementById('yt-audience').value;
         tone = document.getElementById('yt-tone').value;
         notes = document.getElementById('yt-notes').value;
         outputContainer = document.getElementById('yt-output-container');
+        if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a topic first!</div>`; return; }
         prompt = `Generate 3 distinct YouTube video ideas for the topic: "${topic}". The target audience is: "${audience || 'a general audience'}". The tone is: "${tone}". Additional constraints: "${notes || 'None'}". For each idea, provide a catchy title, a short description, and 5 hashtags. Use "---" as a separator between each distinct idea.`;
+    
     } else if (type === 'ig') {
         topic = document.getElementById('ig-topic').value;
         goal = document.getElementById('ig-goal').value;
         tone = document.getElementById('ig-tone').value;
         notes = document.getElementById('ig-notes').value;
         outputContainer = document.getElementById('ig-output-container');
+        if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a topic first!</div>`; return; }
         prompt = `Generate 3 distinct Instagram post ideas for the theme: "${topic}". The main goal is: "${goal || 'engagement'}". The tone is: "${tone}". Additional constraints: "${notes || 'None'}". For each idea, provide a creative caption and 5 hashtags. Use "---" as a separator between each distinct idea.`;
-    }
+    
+    } else if (type === 'li') { // NEW: LinkedIn Logic
+        topic = document.getElementById('li-topic').value;
+        audience = document.getElementById('li-audience').value;
+        tone = document.getElementById('li-tone').value;
+        outputContainer = document.getElementById('li-output-container');
+        if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a topic first!</div>`; return; }
+        prompt = `Generate 2 distinct LinkedIn post ideas about: "${topic}". The target audience is: "${audience || 'professionals in the industry'}". The tone should be: "${tone}". For each idea, provide a compelling post body that encourages discussion and includes 3-4 relevant business hashtags. Use "---" as a separator between each distinct idea.`;
 
-    if (!topic && type !== 'history') { // Do not show error for empty history
-        outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a topic first!</div>`;
-        return;
+    } else if (type === 'blog') { // NEW: Blog Post Logic
+        topic = document.getElementById('blog-topic').value;
+        keywords = document.getElementById('blog-keywords').value;
+        outputContainer = document.getElementById('blog-output-container');
+        if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a core subject first!</div>`; return; }
+        prompt = `Generate 3 distinct blog post ideas based on the subject: "${topic}". The target SEO keywords are: "${keywords || 'not specified'}". For each idea, provide a catchy, SEO-friendly title, a 3-point outline for the blog post, and a list of 5 related SEO keywords. Use "---" as a separator between each distinct idea.`;
     }
 
     // Show loading spinner
@@ -76,12 +90,10 @@ async function getSuggestions(type) {
         });
         const data = await response.json();
         
-        // Clear spinner
-        outputContainer.innerHTML = '';
+        outputContainer.innerHTML = ''; // Clear spinner
 
         if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
             const resultText = data.candidates[0].content.parts[0].text;
-            // Split the single AI response into multiple idea cards
             const ideas = resultText.split('---').filter(idea => idea.trim() !== '');
             ideas.forEach(ideaText => {
                 renderIdeaCard(outputContainer, ideaText.trim());
@@ -98,8 +110,6 @@ async function getSuggestions(type) {
 }
 
 // --- RENDER, HISTORY, AND UTILITY FUNCTIONS ---
-
-// Renders a single idea card with buttons
 function renderIdeaCard(container, text, isFromHistory = false) {
     const card = document.createElement('div');
     card.className = 'idea-card';
@@ -125,7 +135,7 @@ function renderIdeaCard(container, text, isFromHistory = false) {
     const ideas = getHistory();
     const isSaved = ideas.includes(text);
 
-    if (!isFromHistory) { // For generation pages
+    if (!isFromHistory) {
         const saveBtn = document.createElement('button');
         saveBtn.className = isSaved ? 'btn small' : 'btn small primary';
         saveBtn.innerText = isSaved ? '👍 Saved' : '💾 Save';
@@ -137,13 +147,13 @@ function renderIdeaCard(container, text, isFromHistory = false) {
             saveBtn.classList.remove('primary');
         };
         actions.appendChild(saveBtn);
-    } else { // For history page
+    } else {
         const removeBtn = document.createElement('button');
         removeBtn.className = 'btn small ghost';
         removeBtn.innerText = '🗑️ Remove';
         removeBtn.onclick = () => {
             removeIdeaFromHistory(text);
-            renderHistory(); // Re-render the history list
+            renderHistory();
         };
         actions.appendChild(removeBtn);
     }
@@ -153,40 +163,35 @@ function renderIdeaCard(container, text, isFromHistory = false) {
     container.appendChild(card);
 }
 
-// Renders all saved ideas on the history page
 function renderHistory() {
     const historyContainer = document.getElementById('history-output-container');
     historyContainer.innerHTML = '';
     const ideas = getHistory();
     if (ideas.length === 0) {
-        historyContainer.innerHTML = `<div class="idea-card">You have no saved ideas yet. Save ideas from the YouTube or Instagram generators.</div>`;
+        historyContainer.innerHTML = `<div class="idea-card">You have no saved ideas yet. Save ideas from the generators.</div>`;
     } else {
         ideas.forEach(idea => renderIdeaCard(historyContainer, idea, true));
     }
 }
 
-// Gets all ideas from localStorage
 function getHistory() {
     return JSON.parse(localStorage.getItem('lavenderLabHistory') || '[]');
 }
 
-// Saves a new idea to localStorage
 function saveIdeaToHistory(ideaText) {
     const ideas = getHistory();
-    if (!ideas.includes(ideaText)) { // Avoid duplicates
-        ideas.unshift(ideaText); // Add new idea to the beginning
+    if (!ideas.includes(ideaText)) {
+        ideas.unshift(ideaText);
         localStorage.setItem('lavenderLabHistory', JSON.stringify(ideas));
     }
 }
 
-// Removes a specific idea from localStorage
 function removeIdeaFromHistory(ideaText) {
     let ideas = getHistory();
     ideas = ideas.filter(idea => idea !== ideaText);
     localStorage.setItem('lavenderLabHistory', JSON.stringify(ideas));
 }
 
-// Clears all ideas from localStorage and re-renders the history page
 function clearHistory() {
     if (confirm('Are you sure you want to delete all your saved history? This cannot be undone.')) {
         localStorage.removeItem('lavenderLabHistory');

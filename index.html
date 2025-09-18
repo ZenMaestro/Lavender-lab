@@ -21,7 +21,9 @@
       <div class="nav-links">
         <a href="#youtube">YouTube</a>
         <a href="#instagram">Instagram</a>
-        <a href="#history">History</a> <!-- NEW: History Link -->
+        <a href="#linkedin">LinkedIn</a> <!-- NEW -->
+        <a href="#blog">Blog Ideas</a> <!-- NEW -->
+        <a href="#history">History</a>
       </div>
     </div>
   </nav>
@@ -30,11 +32,11 @@
     <!-- ========================= HOME PAGE ========================== -->
     <div id="page-home" class="page">
         <header class="hero">
-            <h1 class="h1">Generate standout <em>YouTube</em> & <em>Instagram</em> content ideas with Gemini</h1>
-            <p class="sub">Real-time suggestions, savable history, and one-click copy. Curated in a clean, modern UI.</p>
+            <h1 class="h1">Generate standout content ideas for <em>all major platforms</em> with Gemini</h1>
+            <p class="sub">Real-time suggestions for YouTube, Instagram, LinkedIn, Blogs, and more. All with savable history.</p>
             <div class="cta-row">
               <a href="#youtube" class="btn primary">Start with YouTube</a>
-              <a href="#instagram" class="btn">Jump to Instagram</a>
+              <a href="#linkedin" class="btn">Try LinkedIn Posts</a>
             </div>
         </header>
     </div>
@@ -70,7 +72,7 @@
             <div class="cta-row form-buttons">
               <button class="btn primary icon" type="submit">⚡ Generate</button>
             </div>
-            <div id="yt-output-container"></div> <!-- Results will now go here -->
+            <div id="yt-output-container"></div>
         </form>
       </section>
     </div>
@@ -106,11 +108,70 @@
             <div class="cta-row form-buttons">
               <button class="btn primary icon" type="submit">⚡ Generate</button>
             </div>
-            <div id="ig-output-container"></div> <!-- Results will now go here -->
+            <div id="ig-output-container"></div>
         </form>
       </section>
     </div>
-    
+
+    <!-- ========================================================== -->
+    <!-- NEW: LINKEDIN PAGE                                         -->
+    <!-- ========================================================== -->
+    <div id="page-linkedin" class="page">
+      <section class="card">
+        <div class="section-title"><h2>💼 LinkedIn Suggestions</h2></div>
+        <form id="li-form" class="form" autocomplete="off">
+            <div class="row">
+              <div>
+                <label for="li-topic">Topic / Announcement</label>
+                <input id="li-topic" class="input" placeholder="e.g., Launching a new feature" required />
+              </div>
+              <div>
+                <label for="li-audience">Target Audience</label>
+                <input id="li-audience" class="input" placeholder="e.g., Tech industry professionals" />
+              </div>
+            </div>
+            <div>
+              <label for="li-tone">Tone</label>
+              <div class="select-wrapper">
+                <select id="li-tone" class="select">
+                    <option>Professional</option>
+                    <option>Thought Leadership</option>
+                    <option>Inspirational</option>
+                    <option>Casual</option>
+                </select>
+              </div>
+            </div>
+            <div class="cta-row form-buttons">
+              <button class="btn primary icon" type="submit">⚡ Generate</button>
+            </div>
+            <div id="li-output-container"></div>
+        </form>
+      </section>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- NEW: BLOG POST IDEAS PAGE                                  -->
+    <!-- ========================================================== -->
+    <div id="page-blog" class="page">
+      <section class="card">
+        <div class="section-title"><h2>📝 Blog Post Ideas</h2></div>
+        <form id="blog-form" class="form" autocomplete="off">
+            <div>
+              <label for="blog-topic">Core Subject</label>
+              <input id="blog-topic" class="input" placeholder="e.g., The benefits of remote work" required />
+            </div>
+            <div>
+              <label for="blog-keywords">Target SEO Keywords</label>
+              <input id="blog-keywords" class="input" placeholder="e.g., remote work, productivity, work from home" />
+            </div>
+            <div class="cta-row form-buttons">
+              <button class="btn primary icon" type="submit">⚡ Generate</button>
+            </div>
+            <div id="blog-output-container"></div>
+        </form>
+      </section>
+    </div>
+
     <!-- ========================= HISTORY PAGE ========================== -->
     <div id="page-history" class="page">
         <section class="card">
