@@ -21,48 +21,56 @@
       <div class="nav-links">
         <a href="#youtube">YouTube</a>
         <a href="#instagram">Instagram</a>
+        <a href="#history">History</a> <!-- NEW: History Link -->
       </div>
     </div>
   </nav>
 
   <main class="container">
-    <!-- ========================= HOME PAGE (HERO) ========================== -->
+    <!-- ========================= HOME PAGE ========================== -->
     <div id="page-home" class="page">
-      <header class="hero">
-        <h1 class="h1">Generate standout <em>YouTube</em> & <em>Instagram</em> content ideas with Gemini</h1>
-        <p class="sub">Real-time suggestions for titles, captions, and hashtags—curated in a clean, modern UI.</p>
-        <div class="cta-row">
-          <a href="#youtube" class="btn primary">Start with YouTube</a>
-          <a href="#instagram" class="btn">Or jump to Instagram</a>
-        </div>
-      </header>
+        <header class="hero">
+            <h1 class="h1">Generate standout <em>YouTube</em> & <em>Instagram</em> content ideas with Gemini</h1>
+            <p class="sub">Real-time suggestions, savable history, and one-click copy. Curated in a clean, modern UI.</p>
+            <div class="cta-row">
+              <a href="#youtube" class="btn primary">Start with YouTube</a>
+              <a href="#instagram" class="btn">Jump to Instagram</a>
+            </div>
+        </header>
     </div>
 
     <!-- ========================= YOUTUBE PAGE ========================== -->
     <div id="page-youtube" class="page">
       <section class="card">
-        <div class="section-title">
-          <h2>🎬 YouTube Suggestions</h2>
-        </div>
+        <div class="section-title"><h2>🎬 YouTube Suggestions</h2></div>
         <form id="yt-form" class="form" autocomplete="off">
-          <div class="row">
-            <div><label for="yt-topic">Topic / Niche</label><input id="yt-topic" class="input" placeholder="e.g., Mastering CSS grid" required /></div>
-            <div><label for="yt-audience">Audience</label><input id="yt-audience" class="input" placeholder="e.g., Beginner web developers" /></div>
-          </div>
-  <div>
-  <label for="yt-tone">Tone / Style</label>
-  <div class="select-wrapper">
-    <select id="yt-tone" class="select">
-      <option>Educational</option>
-      <option>Entertaining</option>
-      <option>Inspirational</option>
-      <option>Analytical</option>
-    </select>
-  </div>
-</div>
-          <div><label for="yt-notes">Optional Constraints</label><textarea id="yt-notes" class="textarea" placeholder="e.g., Include 'beginner friendly', titles under 70 chars..."></textarea></div>
-          <div class="cta-row form-buttons"><button class="btn primary icon" type="submit">⚡ Generate</button><button class="btn ghost icon" type="button" id="yt-clear">🧹 Clear</button></div>
-          <div id="yt-output" class="results-box"></div>
+            <div class="row">
+              <div>
+                <label for="yt-topic">Topic / Niche</label>
+                <input id="yt-topic" class="input" placeholder="e.g., Mastering CSS grid" required />
+              </div>
+              <div>
+                <label for="yt-audience">Audience</label>
+                <input id="yt-audience" class="input" placeholder="e.g., Beginner web developers" />
+              </div>
+            </div>
+            <div>
+              <label for="yt-tone">Tone / Style</label>
+              <select id="yt-tone" class="select">
+                <option>Educational</option>
+                <option>Entertaining</option>
+                <option>Inspirational</option>
+                <option>Analytical</option>
+              </select>
+            </div>
+            <div>
+              <label for="yt-notes">Optional Constraints</label>
+              <textarea id="yt-notes" class="textarea" placeholder="e.g., Include 'beginner friendly', titles under 70 chars..."></textarea>
+            </div>
+            <div class="cta-row form-buttons">
+              <button class="btn primary icon" type="submit">⚡ Generate</button>
+            </div>
+            <div id="yt-output-container"></div> <!-- Results will now go here -->
         </form>
       </section>
     </div>
@@ -70,33 +78,56 @@
     <!-- ========================= INSTAGRAM PAGE ========================== -->
     <div id="page-instagram" class="page">
       <section class="card">
-        <div class="section-title">
-          <h2>📸 Instagram Suggestions</h2>
-        </div>
+        <div class="section-title"><h2>📸 Instagram Suggestions</h2></div>
         <form id="ig-form" class="form" autocomplete="off">
            <div class="row">
-              <div><label for="ig-topic">Theme / Idea</label><input id="ig-topic" class="input" placeholder="e.g., Quick React hook tips" required /></div>
-            <div>
-  <label for="ig-tone">Tone / Vibe</label>
-  <div class="select-wrapper">
-    <select id="ig-tone" class="select">
-      <option>Casual</option>
-      <option>Trendy</option>
-      <option>Educational</option>
-      <option>Bold</option>
-    </select>
-  </div>
-</div>
+              <div>
+                <label for="ig-topic">Theme / Idea</label>
+                <input id="ig-topic" class="input" placeholder="e.g., Quick React hook tips" required />
+              </div>
+              <div>
+                <label for="ig-tone">Tone / Vibe</label>
+                <select id="ig-tone" class="select">
+                  <option>Casual</option>
+                  <option>Trendy</option>
+                  <option>Educational</option>
+                  <option>Bold</option>
+                </select>
+              </div>
             </div>
-            <div><label for="ig-goal">Goal</label><input id="ig-goal" class="input" placeholder="e.g., Save-worthy carousel, shareable tip" /></div>
-            <div><label for="ig-notes">Optional Constraints</label><textarea id="ig-notes" class="textarea" placeholder="e.g., Target hashtag sizes, CTA preference..."></textarea></div>
-            <div class="cta-row form-buttons"><button class="btn primary icon" type="submit">⚡ Generate</button><button class="btn ghost icon" type="button" id="ig-clear">🧹 Clear</button></div>
-          <div id="ig-output" class="results-box"></div>
+            <div>
+              <label for="ig-goal">Goal</label>
+              <input id="ig-goal" class="input" placeholder="e.g., Save-worthy carousel, shareable tip" />
+            </div>
+            <div>
+              <label for="ig-notes">Optional Constraints</label>
+              <textarea id="ig-notes" class="textarea" placeholder="e.g., Target hashtag sizes, CTA preference..."></textarea>
+            </div>
+            <div class="cta-row form-buttons">
+              <button class="btn primary icon" type="submit">⚡ Generate</button>
+            </div>
+            <div id="ig-output-container"></div> <!-- Results will now go here -->
         </form>
       </section>
     </div>
-  </main>
+    
+    <!-- ========================= HISTORY PAGE ========================== -->
+    <div id="page-history" class="page">
+        <section class="card">
+            <div class="section-title">
+                <h2>🗂️ Saved History</h2>
+            </div>
+            <div class="cta-row form-buttons">
+                <button class="btn ghost icon" type="button" id="clear-history">🗑️ Clear All History</button>
+            </div>
+            <div id="history-output-container">
+                <!-- Saved items will be injected here by JavaScript -->
+            </div>
+        </section>
+    </div>
 
+  </main>
+  
   <footer class="container footer">
     <div>© <span id="year"></span> Lavender Lab • Generated with Gemini</div>
   </footer>
