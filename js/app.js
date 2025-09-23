@@ -1,27 +1,47 @@
-// js/app.js
+// js/app.js (Final Version with getRedirectResult for Maximum Compatibility)
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- FIREBASE CONFIGURATION ---
-    // PASTE YOUR FIREBASE CONFIG OBJECT FROM THE FIREBASE CONSOLE HERE
     const firebaseConfig = {
-  apiKey: "AIzaSyB2RyJB4Ic3YfroOIC_O_wyNlyNWkxMk90",
-  authDomain: "lavender-lab.firebaseapp.com",
-  projectId: "lavender-lab",
-  storageBucket: "lavender-lab.firebasestorage.app",
-  messagingSenderId: "948543864912",
-  appId: "1:948543864912:web:45014ed50c0f1e2f15d155",
-  measurementId: "G-D1H482BQ5M"
-};
+      apiKey: "AIzaSyB2RyJB4Ic3Yfro0IC_O_wyNlyNWkxMk90",
+      authDomain: "lavender-lab.firebaseapp.com",
+      projectId: "lavender-lab",
+      storageBucket: "lavender-lab.firebasestorage.app",
+      messagingSenderId: "948543864912",
+      appId: "1:948543864912:web:45014ed50c0f1e2f15d155",
+      measurementId: "G-D1H482BQ5M"
+    };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+    // --- UI ELEMENTS ---
     const loginScreen = document.getElementById('login-screen');
     const mainApp = document.getElementById('main-app');
     const signInBtn = document.getElementById('google-signin-btn');
     const signOutBtn = document.getElementById('signout-btn');
 
+    // --- THIS IS THE CRUCIAL FIX ---
+    // This code runs as soon as the page loads. It checks if the user is
+    // being redirected back from the Google sign-in page.
+    auth.getRedirectResult()
+      .then((result) => {
+        if (result.user) {
+          // User has just successfully signed in.
+          // The onAuthStateChanged listener below will handle showing the app.
+          console.log("Redirect sign-in successful:", result.user.displayName);
+        }
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        console.error("Redirect result error", error);
+        alert(`Sign-in failed: ${error.message}`);
+      });
+
+    // --- AUTH STATE LISTENER (Primary UI controller) ---
+    // This function runs after getRedirectResult and whenever the user's login state changes.
     auth.onAuthStateChanged(user => {
         if (user) {
             loginScreen.style.display = 'none';
@@ -33,11 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-   signInBtn.addEventListener('click', () => {
-    auth.signInWithRedirect(googleProvider);
-});
-    signOutBtn.addEventListener('click', () => auth.signOut());
+    // Event listener for the sign-in button
+    signInBtn.addEventListener('click', () => {
+        auth.signInWithRedirect(googleProvider);
+    });
 
+    // Event listener for the sign-out button
+    signOutBtn.addEventListener('click', () => {
+        auth.signOut();
+    });
+
+    // Attach form submit listeners
     document.getElementById('yt-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('yt'); });
     document.getElementById('ig-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('ig'); });
     document.getElementById('li-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('li'); });
@@ -46,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('year').textContent = new Date().getFullYear();
 });
 
+// (The rest of your code: setupRouter, getSuggestions, history functions, etc., remains exactly the same)
+// ... all your other functions go here ...
 function setupRouter() {
     window.addEventListener('hashchange', handleRouteChange);
     handleRouteChange();
@@ -164,10 +192,10 @@ function exportResults(type) {
     a.href = url;
     a.download = `lavender-lab-${type}-export.txt`;
     document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-URL.revokeObjectURL(url);
-showToast('Results exported!');
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Results exported!');
 }
 
 function renderIdeaCard(container, rawText, isFromHistory = false) {
