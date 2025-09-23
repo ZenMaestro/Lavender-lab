@@ -33,7 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    signInBtn.addEventListener('click', () => auth.signInWithPopup(googleProvider).catch(error => console.error("Sign-in error", error)));
+   signInBtn.addEventListener('click', () => {
+    auth.signInWithRedirect(googleProvider);
+});
     signOutBtn.addEventListener('click', () => auth.signOut());
 
     document.getElementById('yt-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('yt'); });
