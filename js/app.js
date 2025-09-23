@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FIREBASE CONFIGURATION ---
     // PASTE YOUR FIREBASE CONFIG OBJECT FROM THE FIREBASE CONSOLE HERE
     const firebaseConfig = {
-  apiKey: "AIzaSyB2RyJB4Ic3Yfro0IC_O_wyNlyNWkxMk90",
+  apiKey: "AIzaSyB2RyJB4Ic3YfroOIC_O_wyNlyNWkxMk90",
   authDomain: "lavender-lab.firebaseapp.com",
   projectId: "lavender-lab",
   storageBucket: "lavender-lab.firebasestorage.app",
