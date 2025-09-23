@@ -3,14 +3,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- FIREBASE CONFIGURATION ---
     const firebaseConfig = {
-      apiKey: "AIzaSyB2RyJB4Ic3Yfro0IC_O_wyNlyNWkxMk90",
-      authDomain: "lavender-lab.firebaseapp.com",
-      projectId: "lavender-lab",
-      storageBucket: "lavender-lab.firebasestorage.app",
-      messagingSenderId: "948543864912",
-      appId: "1:948543864912:web:45014ed50c0f1e2f15d155",
-      measurementId: "G-D1H482BQ5M"
-    };
+  apiKey: "AIzaSyA-aJpD3S6oQnCZZBTH9QFxarqSyLbt8PE",
+  authDomain: "lavender-lab.firebaseapp.com",
+  projectId: "lavender-lab",
+  storageBucket: "lavender-lab.firebasestorage.app",
+  messagingSenderId: "948543864912",
+  appId: "1:948543864912:web:45014ed50c0f1e2f15d155",
+  measurementId: "G-D1H482BQ5M"
+};
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
