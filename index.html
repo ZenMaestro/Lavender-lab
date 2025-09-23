@@ -11,187 +11,118 @@
 </head>
 <body>
 
-  <!-- ========================= NAV ========================== -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="#home" class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <span>Lavender Lab</span>
-      </a>
-      <div class="nav-links">
-        <a href="#youtube">YouTube</a>
-        <a href="#instagram">Instagram</a>
-        <a href="#linkedin">LinkedIn</a> <!-- NEW -->
-        <a href="#blog">Blog Ideas</a> <!-- NEW -->
-        <a href="#history">History</a>
+  <!-- ========================= LOGIN SCREEN (Shown when logged out) ========================== -->
+  <div id="login-screen" class="login-container">
+    <div class="card">
+        <div class="brand brand-login">
+            <div class="logo"></div>
+            <span>Lavender Lab</span>
+        </div>
+        <p class="sub sub-login">Please sign in with Google to continue.</p>
+        <div class="cta-row">
+            <button id="google-signin-btn" class="btn primary">Sign in with Google</button>
+        </div>
+    </div>
+  </div>
+
+  <!-- ========================= MAIN APP (Hidden until logged in) ========================== -->
+  <div id="main-app">
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="#home" class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <span>Lavender Lab</span>
+        </a>
+        <div class="nav-links">
+          <a href="#youtube">YouTube</a>
+          <a href="#instagram">Instagram</a>
+          <a href="#linkedin">LinkedIn</a>
+          <a href="#blog">Blog Ideas</a>
+          <a href="#history">History</a>
+          <button id="signout-btn" class="btn small ghost">Sign Out</button>
+        </div>
       </div>
-    </div>
-  </nav>
-
-  <main class="container">
-    <!-- ========================= HOME PAGE ========================== -->
-    <div id="page-home" class="page">
+    </nav>
+    <main class="container">
+      <!-- HOME PAGE -->
+      <div id="page-home" class="page">
         <header class="hero">
-            <h1 class="h1">Generate standout content ideas for <em>all major platforms</em> with Gemini</h1>
-            <p class="sub">Real-time suggestions for YouTube, Instagram, LinkedIn, Blogs, and more. All with savable history.</p>
-            <div class="cta-row">
-              <a href="#youtube" class="btn primary">Start with YouTube</a>
-              <a href="#linkedin" class="btn">Try LinkedIn Posts</a>
-            </div>
+            <h1 class="h1">Welcome to <em>Lavender Lab</em></h1>
+            <p class="sub">You are signed in. Select a generator from the navigation to get started.</p>
         </header>
-    </div>
-
-    <!-- ========================= YOUTUBE PAGE ========================== -->
-    <div id="page-youtube" class="page">
-      <section class="card">
-        <div class="section-title"><h2>🎬 YouTube Suggestions</h2></div>
-        <form id="yt-form" class="form" autocomplete="off">
-            <div class="row">
-              <div>
-                <label for="yt-topic">Topic / Niche</label>
-                <input id="yt-topic" class="input" placeholder="e.g., Mastering CSS grid" required />
-              </div>
-              <div>
-                <label for="yt-audience">Audience</label>
-                <input id="yt-audience" class="input" placeholder="e.g., Beginner web developers" />
-              </div>
-            </div>
-            <div>
-              <label for="yt-tone">Tone / Style</label>
-              <select id="yt-tone" class="select">
-                <option>Educational</option>
-                <option>Entertaining</option>
-                <option>Inspirational</option>
-                <option>Analytical</option>
-              </select>
-            </div>
-            <div>
-              <label for="yt-notes">Optional Constraints</label>
-              <textarea id="yt-notes" class="textarea" placeholder="e.g., Include 'beginner friendly', titles under 70 chars..."></textarea>
-            </div>
-            <div class="cta-row form-buttons">
-              <button class="btn primary icon" type="submit">⚡ Generate</button>
-            </div>
-            <div id="yt-output-container"></div>
-        </form>
-      </section>
-    </div>
-
-    <!-- ========================= INSTAGRAM PAGE ========================== -->
-    <div id="page-instagram" class="page">
-      <section class="card">
-        <div class="section-title"><h2>📸 Instagram Suggestions</h2></div>
-        <form id="ig-form" class="form" autocomplete="off">
-           <div class="row">
-              <div>
-                <label for="ig-topic">Theme / Idea</label>
-                <input id="ig-topic" class="input" placeholder="e.g., Quick React hook tips" required />
-              </div>
-              <div>
-                <label for="ig-tone">Tone / Vibe</label>
-                <select id="ig-tone" class="select">
-                  <option>Casual</option>
-                  <option>Trendy</option>
-                  <option>Educational</option>
-                  <option>Bold</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label for="ig-goal">Goal</label>
-              <input id="ig-goal" class="input" placeholder="e.g., Save-worthy carousel, shareable tip" />
-            </div>
-            <div>
-              <label for="ig-notes">Optional Constraints</label>
-              <textarea id="ig-notes" class="textarea" placeholder="e.g., Target hashtag sizes, CTA preference..."></textarea>
-            </div>
-            <div class="cta-row form-buttons">
-              <button class="btn primary icon" type="submit">⚡ Generate</button>
-            </div>
-            <div id="ig-output-container"></div>
-        </form>
-      </section>
-    </div>
-
-    <!-- ========================================================== -->
-    <!-- NEW: LINKEDIN PAGE                                         -->
-    <!-- ========================================================== -->
-    <div id="page-linkedin" class="page">
-      <section class="card">
-        <div class="section-title"><h2>💼 LinkedIn Suggestions</h2></div>
-        <form id="li-form" class="form" autocomplete="off">
-            <div class="row">
-              <div>
-                <label for="li-topic">Topic / Announcement</label>
-                <input id="li-topic" class="input" placeholder="e.g., Launching a new feature" required />
-              </div>
-              <div>
-                <label for="li-audience">Target Audience</label>
-                <input id="li-audience" class="input" placeholder="e.g., Tech industry professionals" />
-              </div>
-            </div>
-            <div>
-              <label for="li-tone">Tone</label>
-              <div class="select-wrapper">
-                <select id="li-tone" class="select">
-                    <option>Professional</option>
-                    <option>Thought Leadership</option>
-                    <option>Inspirational</option>
-                    <option>Casual</option>
-                </select>
-              </div>
-            </div>
-            <div class="cta-row form-buttons">
-              <button class="btn primary icon" type="submit">⚡ Generate</button>
-            </div>
-            <div id="li-output-container"></div>
-        </form>
-      </section>
-    </div>
-
-    <!-- ========================================================== -->
-    <!-- NEW: BLOG POST IDEAS PAGE                                  -->
-    <!-- ========================================================== -->
-    <div id="page-blog" class="page">
-      <section class="card">
-        <div class="section-title"><h2>📝 Blog Post Ideas</h2></div>
-        <form id="blog-form" class="form" autocomplete="off">
-            <div>
-              <label for="blog-topic">Core Subject</label>
-              <input id="blog-topic" class="input" placeholder="e.g., The benefits of remote work" required />
-            </div>
-            <div>
-              <label for="blog-keywords">Target SEO Keywords</label>
-              <input id="blog-keywords" class="input" placeholder="e.g., remote work, productivity, work from home" />
-            </div>
-            <div class="cta-row form-buttons">
-              <button class="btn primary icon" type="submit">⚡ Generate</button>
-            </div>
-            <div id="blog-output-container"></div>
-        </form>
-      </section>
-    </div>
-
-    <!-- ========================= HISTORY PAGE ========================== -->
-    <div id="page-history" class="page">
+      </div>
+      <!-- YOUTUBE PAGE -->
+      <div id="page-youtube" class="page">
         <section class="card">
-            <div class="section-title">
-                <h2>🗂️ Saved History</h2>
-            </div>
-            <div class="cta-row form-buttons">
-                <button class="btn ghost icon" type="button" id="clear-history">🗑️ Clear All History</button>
-            </div>
-            <div id="history-output-container">
-                <!-- Saved items will be injected here by JavaScript -->
-            </div>
+          <div class="section-title"><h2>🎬 YouTube Suggestions</h2></div>
+          <form id="yt-form" class="form" autocomplete="off">
+              <div class="row"><label for="yt-topic">Topic / Niche</label><input id="yt-topic" class="input" placeholder="e.g., Mastering CSS grid" required /></div>
+              <div class="row"><label for="yt-audience">Audience</label><input id="yt-audience" class="input" placeholder="e.g., Beginner web developers" /></div>
+              <div><label for="yt-tone">Tone / Style</label><div class="select-wrapper"><select id="yt-tone" class="select"><option>Educational</option><option>Entertaining</option><option>Inspirational</option></select></div></div>
+              <div class="cta-row form-buttons"><button class="btn primary icon" type="submit">⚡ Generate</button></div>
+              <div id="yt-output-container"></div>
+              <div id="yt-export-container" class="export-container"></div>
+          </form>
         </section>
-    </div>
-
-  </main>
+      </div>
+      <!-- INSTAGRAM PAGE -->
+      <div id="page-instagram" class="page">
+        <section class="card">
+          <div class="section-title"><h2>📸 Instagram Suggestions</h2></div>
+          <form id="ig-form" class="form" autocomplete="off">
+             <div class="row"><label for="ig-topic">Theme / Idea</label><input id="ig-topic" class="input" placeholder="e.g., Quick React hook tips" required /></div>
+             <div><label for="ig-tone">Tone / Vibe</label><div class="select-wrapper"><select id="ig-tone" class="select"><option>Casual</option><option>Trendy</option><option>Educational</option></select></div></div>
+             <div><label for="ig-goal">Goal</label><input id="ig-goal" class="input" placeholder="e.g., Save-worthy carousel" /></div>
+             <div class="cta-row form-buttons"><button class="btn primary icon" type="submit">⚡ Generate</button></div>
+             <div id="ig-output-container"></div>
+             <div id="ig-export-container" class="export-container"></div>
+          </form>
+        </section>
+      </div>
+      <!-- LINKEDIN PAGE -->
+      <div id="page-linkedin" class="page">
+        <section class="card">
+          <div class="section-title"><h2>💼 LinkedIn Suggestions</h2></div>
+          <form id="li-form" class="form" autocomplete="off">
+              <div class="row"><label for="li-topic">Topic / Announcement</label><input id="li-topic" class="input" placeholder="e.g., Launching a new feature" required /></div>
+              <div><label for="li-audience">Target Audience</label><input id="li-audience" class="input" placeholder="e.g., Tech professionals" /></div>
+              <div><label for="li-tone">Tone</label><div class="select-wrapper"><select id="li-tone" class="select"><option>Professional</option><option>Thought Leadership</option></select></div></div>
+              <div class="cta-row form-buttons"><button class="btn primary icon" type="submit">⚡ Generate</button></div>
+              <div id="li-output-container"></div>
+              <div id="li-export-container" class="export-container"></div>
+          </form>
+        </section>
+      </div>
+      <!-- BLOG POST IDEAS PAGE -->
+      <div id="page-blog" class="page">
+        <section class="card">
+          <div class="section-title"><h2>📝 Blog Post Ideas</h2></div>
+          <form id="blog-form" class="form" autocomplete="off">
+              <div><label for="blog-topic">Core Subject</label><input id="blog-topic" class="input" placeholder="e.g., The benefits of remote work" required /></div>
+              <div><label for="blog-keywords">Target SEO Keywords</label><input id="blog-keywords" class="input" placeholder="e.g., remote work, productivity" /></div>
+              <div class="cta-row form-buttons"><button class="btn primary icon" type="submit">⚡ Generate</button></div>
+              <div id="blog-output-container"></div>
+              <div id="blog-export-container" class="export-container"></div>
+          </form>
+        </section>
+      </div>
+      <!-- HISTORY PAGE -->
+      <div id="page-history" class="page">
+        <section class="card">
+            <div class="section-title"><h2>🗂️ Saved History</h2></div>
+            <div class="cta-row form-buttons"><button class="btn ghost icon" type="button" id="clear-history">🗑️ Clear All History</button></div>
+            <div id="history-output-container"></div>
+        </section>
+      </div>
+    </main>
+    <footer class="container footer"><div>© <span id="year"></span> Lavender Lab • Generated with Gemini</div></footer>
+  </div>
   
-  <footer class="container footer">
-    <div>© <span id="year"></span> Lavender Lab • Generated with Gemini</div>
-  </footer>
+  <div id="toast-notification" class="toast"></div>
+
+  <!-- Firebase SDK Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   
   <script src="js/app.js"></script>
 </body>
