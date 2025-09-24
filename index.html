@@ -8,22 +8,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- ✅ Clerk Browser SDK -->
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="YOUR_PUBLISHABLE_KEY"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js">
+  </script>
 </head>
 <body>
 
-  <!-- ========================= LOGIN SCREEN (Shown when logged out) ========================== -->
-  <div id="login-screen" class="login-container">
-    <div class="card">
-        <div class="brand brand-login">
-            <div class="logo"></div>
-            <span>Lavender Lab</span>
-        </div>
-        <p class="sub sub-login">Please sign in with Google to continue.</p>
-        <div class="cta-row">
-            <button id="google-signin-btn" class="btn primary">Sign in with Google</button>
-        </div>
-    </div>
-  </div>
+  <!-- ========================= AUTH SECTION (Clerk mounts here) ========================== -->
+  <div id="auth-section"></div>
 
   <!-- ========================= MAIN APP (Hidden until logged in) ========================== -->
   <div id="main-app">
@@ -120,10 +117,7 @@
   
   <div id="toast-notification" class="toast"></div>
 
-  <!-- Firebase SDK Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  
+  <!-- ✅ App logic -->
   <script src="js/app.js"></script>
 </body>
 </html>

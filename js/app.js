@@ -1,227 +1,182 @@
-// js/app.js (Final Version with getRedirectResult for Maximum Compatibility)
+document.addEventListener("DOMContentLoaded", async () => {
+  // Wait for Clerk to load
+  await Clerk.load();
 
-document.addEventListener('DOMContentLoaded', () => {
-    // --- FIREBASE CONFIGURATION ---
-   const firebaseConfig = {
-  apiKey: "AIzaSyAYMTEdwY1QkSYkxXl9y9G347PagzxD7A0w",
-  authDomain: "lavender-120a0.firebaseapp.com",
-  projectId: "lavender-120a0",
-  storageBucket: "lavender-120a0.firebasestorage.app",
-  messagingSenderId: "930641460992",
-  appId: "1:930641460992:web:b24c5ae3b5b27493af7de5",
-  measurementId: "G-V0JY3TNTC9"
-};
+  const mainApp = document.getElementById("main-app");
+  const authSection = document.getElementById("auth-section");
+  const signOutBtn = document.getElementById("signout-btn");
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
+  // Initial state: check if logged in
+  if (Clerk.user) {
+    showMainApp();
+  } else {
+    Clerk.mountSignIn(authSection, { afterSignInUrl: "/" });
+  }
 
-    // --- UI ELEMENTS ---
-    const loginScreen = document.getElementById('login-screen');
-    const mainApp = document.getElementById('main-app');
-    const signInBtn = document.getElementById('google-signin-btn');
-    const signOutBtn = document.getElementById('signout-btn');
+  // React to login/logout
+  Clerk.addListener(({ user }) => {
+    if (user) {
+      showMainApp();
+    } else {
+      mainApp.style.display = "none";
+      authSection.innerHTML = "";
+      Clerk.mountSignIn(authSection, { afterSignInUrl: "/" });
+    }
+  });
 
-    // --- THIS IS THE CRUCIAL FIX ---
-    // This code runs as soon as the page loads. It checks if the user is
-    // being redirected back from the Google sign-in page.
-    auth.getRedirectResult()
-      .then((result) => {
-        if (result.user) {
-          // User has just successfully signed in.
-          // The onAuthStateChanged listener below will handle showing the app.
-          console.log("Redirect sign-in successful:", result.user.displayName);
-        }
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        console.error("Redirect result error", error);
-        alert(`Sign-in failed: ${error.message}`);
-      });
+  function showMainApp() {
+    authSection.innerHTML = `
+      <div class="user-bar">
+        Welcome, ${Clerk.user.firstName || "User"} 👋
+        <button id="signout-btn" class="btn small ghost">Sign Out</button>
+      </div>
+    `;
+    document.getElementById("signout-btn").onclick = () => Clerk.signOut();
+    mainApp.style.display = "block";
+    setupRouter();
+  }
 
-    // --- AUTH STATE LISTENER (Primary UI controller) ---
-    // This function runs after getRedirectResult and whenever the user's login state changes.
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            loginScreen.style.display = 'none';
-            mainApp.style.display = 'block';
-            setupRouter(); // Initialize the app only after login
-        } else {
-            loginScreen.style.display = 'flex';
-            mainApp.style.display = 'none';
-        }
-    });
-
-    // Event listener for the sign-in button
-    signInBtn.addEventListener('click', () => {
-        auth.signInWithRedirect(googleProvider);
-    });
-
-    // Event listener for the sign-out button
-    signOutBtn.addEventListener('click', () => {
-        auth.signOut();
-    });
-
-    // Attach form submit listeners
-    document.getElementById('yt-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('yt'); });
-    document.getElementById('ig-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('ig'); });
-    document.getElementById('li-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('li'); });
-    document.getElementById('blog-form').addEventListener('submit', (e) => { e.preventDefault(); getSuggestions('blog'); });
-    document.getElementById('clear-history').addEventListener('click', clearHistory);
-    document.getElementById('year').textContent = new Date().getFullYear();
+  // Attach form listeners
+  document.getElementById("yt-form").addEventListener("submit", (e) => { e.preventDefault(); getSuggestions("yt"); });
+  document.getElementById("ig-form").addEventListener("submit", (e) => { e.preventDefault(); getSuggestions("ig"); });
+  document.getElementById("li-form").addEventListener("submit", (e) => { e.preventDefault(); getSuggestions("li"); });
+  document.getElementById("blog-form").addEventListener("submit", (e) => { e.preventDefault(); getSuggestions("blog"); });
+  document.getElementById("clear-history").addEventListener("click", clearHistory);
+  document.getElementById("year").textContent = new Date().getFullYear();
 });
 
-// (The rest of your code: setupRouter, getSuggestions, history functions, etc., remains exactly the same)
-// ... all your other functions go here ...
+// --- Router ---
 function setupRouter() {
-    window.addEventListener('hashchange', handleRouteChange);
-    handleRouteChange();
+  window.addEventListener("hashchange", handleRouteChange);
+  handleRouteChange();
 }
 
 function handleRouteChange() {
-    const hash = window.location.hash || '#home';
-    const pageId = `page-${hash.substring(1)}`;
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    const targetPage = document.getElementById(pageId);
-    if (targetPage) {
-        targetPage.classList.add('active');
-    } else {
-        document.getElementById('page-home').classList.add('active');
-    }
-    document.querySelectorAll('.nav a').forEach(link => {
-        const linkHash = link.classList.contains('brand') ? '#home' : link.getAttribute('href');
-        if (linkHash === hash) {
-            link.classList.add('active-link');
-        } else {
-            link.classList.remove('active-link');
-        }
-    });
-    if (hash === '#history') {
-        renderHistory();
-    }
+  const hash = window.location.hash || "#home";
+  const pageId = `page-${hash.substring(1)}`;
+  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+  const targetPage = document.getElementById(pageId);
+  if (targetPage) targetPage.classList.add("active");
+  else document.getElementById("page-home").classList.add("active");
+
+  if (hash === "#history") {
+    renderHistory();
+  }
 }
 
+// --- Generate Suggestions ---
 async function getSuggestions(type) {
-    const user = firebase.auth().currentUser;
-    if (!user) {
-        showToast("Authentication error. Please sign in again.");
-        return;
-    }
-    const token = await user.getIdToken();
-    let topic = '', audience = '', tone = '', notes = '', goal = '', keywords = '', outputContainer, exportContainer, prompt;
+  const token = await Clerk.session.getToken(); // ✅ Clerk JWT
+  if (!token) {
+    showToast("Authentication error. Please sign in again.");
+    return;
+  }
 
-    // Determine containers and build prompt
-    if (type === 'yt') {
-        topic = document.getElementById('yt-topic').value; audience = document.getElementById('yt-audience').value; tone = document.getElementById('yt-tone').value; outputContainer = document.getElementById('yt-output-container'); exportContainer = document.getElementById('yt-export-container');
-        if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a topic first!</div>`; return; }
-        prompt = `Generate 3 distinct YouTube video ideas for the topic: "${topic}". Audience: "${audience || 'general'}". Tone: "${tone}". For each idea, provide a title, description, and hashtags. Use "---" as a separator.`;
-    } else if (type === 'ig') {
-        topic = document.getElementById('ig-topic').value; goal = document.getElementById('ig-goal').value; tone = document.getElementById('ig-tone').value; outputContainer = document.getElementById('ig-output-container'); exportContainer = document.getElementById('ig-export-container');
-        if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a topic first!</div>`; return; }
-        prompt = `Generate 3 distinct Instagram post ideas for: "${topic}". Goal: "${goal || 'engagement'}". Tone: "${tone}". For each, provide a caption and hashtags. Use "---" as a separator.`;
-    } else if (type === 'li') {
-        topic = document.getElementById('li-topic').value; audience = document.getElementById('li-audience').value; tone = document.getElementById('li-tone').value; outputContainer = document.getElementById('li-output-container'); exportContainer = document.getElementById('li-export-container');
-        if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a topic first!</div>`; return; }
-        prompt = `Generate 2 distinct LinkedIn posts about: "${topic}". Audience: "${audience || 'professionals'}". Tone: "${tone}". For each, provide post body and hashtags. Use "---" as a separator.`;
-    } else if (type === 'blog') {
-        topic = document.getElementById('blog-topic').value; keywords = document.getElementById('blog-keywords').value; outputContainer = document.getElementById('blog-output-container'); exportContainer = document.getElementById('blog-export-container');
-        if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Please enter a subject first!</div>`; return; }
-        prompt = `Generate 3 distinct blog post ideas for: "${topic}". Keywords: "${keywords || 'not specified'}". For each, provide a title, a 3-point outline, and related keywords. Use "---" as a separator.`;
-    }
+  let topic = "", audience = "", tone = "", goal = "", keywords = "",
+      outputContainer, exportContainer, prompt;
 
-    outputContainer.innerHTML = `<div class="spinner"></div>`;
-    exportContainer.classList.remove('visible');
-    exportContainer.innerHTML = '';
+  if (type === "yt") {
+    topic = document.getElementById("yt-topic").value;
+    audience = document.getElementById("yt-audience").value;
+    tone = document.getElementById("yt-tone").value;
+    outputContainer = document.getElementById("yt-output-container");
+    exportContainer = document.getElementById("yt-export-container");
+    if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Enter a topic first!</div>`; return; }
+    prompt = `Generate 3 YouTube ideas for "${topic}". Audience: "${audience || "general"}". Tone: "${tone}". Provide title, description, hashtags. Use "---" as a separator.`;
+  } else if (type === "ig") {
+    topic = document.getElementById("ig-topic").value;
+    goal = document.getElementById("ig-goal").value;
+    tone = document.getElementById("ig-tone").value;
+    outputContainer = document.getElementById("ig-output-container");
+    exportContainer = document.getElementById("ig-export-container");
+    if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Enter a theme first!</div>`; return; }
+    prompt = `Generate 3 Instagram post ideas for "${topic}". Goal: "${goal || "engagement"}". Tone: "${tone}". Provide caption and hashtags. Use "---" as a separator.`;
+  } else if (type === "li") {
+    topic = document.getElementById("li-topic").value;
+    audience = document.getElementById("li-audience").value;
+    tone = document.getElementById("li-tone").value;
+    outputContainer = document.getElementById("li-output-container");
+    exportContainer = document.getElementById("li-export-container");
+    if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Enter a topic first!</div>`; return; }
+    prompt = `Generate 2 LinkedIn posts about "${topic}". Audience: "${audience || "professionals"}". Tone: "${tone}". Provide post text and hashtags. Use "---" as a separator.`;
+  } else if (type === "blog") {
+    topic = document.getElementById("blog-topic").value;
+    keywords = document.getElementById("blog-keywords").value;
+    outputContainer = document.getElementById("blog-output-container");
+    exportContainer = document.getElementById("blog-export-container");
+    if (!topic) { outputContainer.innerHTML = `<div class="idea-card">⚠️ Enter a subject first!</div>`; return; }
+    prompt = `Generate 3 blog post ideas about "${topic}". Keywords: "${keywords || "none"}". Provide title, short outline, and SEO keywords. Use "---" as a separator.`;
+  }
 
-    try {
-        const response = await fetch("https://lavender-lab1.onrender.com/generate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify({ prompt }),
-        });
-        
-        outputContainer.innerHTML = '';
-        if (!response.ok) { throw new Error(`Server error: ${response.statusText}`); }
-        const data = await response.json();
+  outputContainer.innerHTML = `<div class="spinner"></div>`;
+  exportContainer.classList.remove("visible");
+  exportContainer.innerHTML = "";
 
-        if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-            const resultText = data.candidates[0].content.parts[0].text;
-            const ideas = resultText.split('---').filter(idea => idea.trim() !== '');
-            ideas.forEach(ideaText => renderIdeaCard(outputContainer, ideaText.trim()));
-            if (ideas.length > 0) {
-                const exportBtn = document.createElement('button');
-                exportBtn.className = 'btn ghost';
-                exportBtn.innerText = '📄 Export as .txt File';
-                exportBtn.onclick = () => exportResults(type);
-                exportContainer.appendChild(exportBtn);
-                exportContainer.classList.add('visible');
-            }
-        } else {
-            renderIdeaCard(outputContainer, "Sorry, I couldn't get a valid response from the AI. Please try again.");
-        }
-    } catch (error) {
-        console.error("Error:", error);
-        renderIdeaCard(outputContainer, `⚠️ Error: ${error.message}. Make sure the backend server is running and accessible.`);
-    }
-}
-
-function showToast(message) {
-    const toast = document.getElementById('toast-notification');
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-function formatIdeaText(text) {
-    const escapedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    return escapedText.replace(/#\w+/g, (match) => `<span class="hashtag">${match}</span>`);
-}
-
-function exportResults(type) {
-    const outputContainer = document.getElementById(`${type}-output-container`);
-    if (!outputContainer) return;
-    const ideas = outputContainer.querySelectorAll('.idea-card > div:first-child');
-    let fullText = `Lavender Lab - Generated Content\nPlatform: ${type.toUpperCase()}\nDate: ${new Date().toLocaleString()}\n\n`;
-    ideas.forEach((idea, index) => {
-        fullText += `--- IDEA ${index + 1} ---\n\n${idea.innerText}\n\n`;
+  try {
+    const response = await fetch("http://localhost:5000/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+      body: JSON.stringify({ prompt }),
     });
-    const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `lavender-lab-${type}-export.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast('Results exported!');
+
+    outputContainer.innerHTML = "";
+    if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
+    const data = await response.json();
+
+    if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+      const resultText = data.candidates[0].content.parts[0].text;
+      const ideas = resultText.split("---").filter(idea => idea.trim() !== "");
+      ideas.forEach(ideaText => renderIdeaCard(outputContainer, ideaText.trim()));
+
+      if (ideas.length > 0) {
+        const exportBtn = document.createElement("button");
+        exportBtn.className = "btn ghost";
+        exportBtn.innerText = "📄 Export";
+        exportBtn.onclick = () => exportResults(type);
+        exportContainer.appendChild(exportBtn);
+        exportContainer.classList.add("visible");
+      }
+    } else {
+      renderIdeaCard(outputContainer, "⚠️ No valid response from AI.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    renderIdeaCard(outputContainer, `⚠️ Error: ${error.message}`);
+  }
+}
+
+// --- Helpers ---
+function showToast(message) {
+  const toast = document.getElementById("toast-notification");
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
 function renderIdeaCard(container, rawText, isFromHistory = false) {
-    const card = document.createElement('div'); card.className = 'idea-card';
-    const content = document.createElement('div'); content.innerHTML = formatIdeaText(rawText);
-    const actions = document.createElement('div'); actions.className = 'idea-actions';
-    const copyBtn = document.createElement('button'); copyBtn.className = 'btn small'; copyBtn.innerText = '📋 Copy';
-    copyBtn.onclick = () => { navigator.clipboard.writeText(rawText); showToast('Copied to clipboard!'); };
-    actions.appendChild(copyBtn);
+  const card = document.createElement("div"); card.className = "idea-card";
+  const content = document.createElement("div"); content.innerText = rawText;
+  const actions = document.createElement("div"); actions.className = "idea-actions";
+  const copyBtn = document.createElement("button"); copyBtn.className = "btn small"; copyBtn.innerText = "📋 Copy";
+  copyBtn.onclick = () => { navigator.clipboard.writeText(rawText); showToast("Copied!"); };
+  actions.appendChild(copyBtn);
 
-    if (!isFromHistory) {
-        const ideas = getHistory(); const isSaved = ideas.includes(rawText);
-        const saveBtn = document.createElement('button'); saveBtn.className = isSaved ? 'btn small' : 'btn small primary';
-        saveBtn.innerText = isSaved ? '👍 Saved' : '💾 Save'; saveBtn.disabled = isSaved;
-        saveBtn.onclick = () => { saveIdeaToHistory(rawText); showToast('Idea saved to history!'); saveBtn.innerText = '👍 Saved!'; saveBtn.disabled = true; saveBtn.classList.remove('primary'); };
-        actions.appendChild(saveBtn);
-    } else {
-        const removeBtn = document.createElement('button'); removeBtn.className = 'btn small ghost'; removeBtn.innerText = '🗑️ Remove';
-        removeBtn.onclick = () => { removeIdeaFromHistory(rawText); showToast('Removed from history.'); renderHistory(); };
-        actions.appendChild(removeBtn);
-    }
-    card.appendChild(content); card.appendChild(actions); container.appendChild(card);
+  if (!isFromHistory) {
+    const ideas = getHistory(); const isSaved = ideas.includes(rawText);
+    const saveBtn = document.createElement("button"); saveBtn.className = isSaved ? "btn small" : "btn small primary";
+    saveBtn.innerText = isSaved ? "👍 Saved" : "💾 Save"; saveBtn.disabled = isSaved;
+    saveBtn.onclick = () => { saveIdeaToHistory(rawText); showToast("Saved!"); saveBtn.innerText = "👍 Saved"; saveBtn.disabled = true; saveBtn.classList.remove("primary"); };
+    actions.appendChild(saveBtn);
+  } else {
+    const removeBtn = document.createElement("button"); removeBtn.className = "btn small ghost"; removeBtn.innerText = "🗑️ Remove";
+    removeBtn.onclick = () => { removeIdeaFromHistory(rawText); showToast("Removed"); renderHistory(); };
+    actions.appendChild(removeBtn);
+  }
+  card.appendChild(content); card.appendChild(actions); container.appendChild(card);
 }
 
-function getHistory() { return JSON.parse(localStorage.getItem('lavenderLabHistory') || '[]'); }
-function saveIdeaToHistory(ideaText) { const ideas = getHistory(); if (!ideas.includes(ideaText)) { ideas.unshift(ideaText); localStorage.setItem('lavenderLabHistory', JSON.stringify(ideas)); } }
-function removeIdeaFromHistory(ideaText) { let ideas = getHistory(); ideas = ideas.filter(idea => idea !== ideaText); localStorage.setItem('lavenderLabHistory', JSON.stringify(ideas)); }
-function renderHistory() { const historyContainer = document.getElementById('history-output-container'); historyContainer.innerHTML = ''; const ideas = getHistory(); if (ideas.length === 0) { historyContainer.innerHTML = `<div class="idea-card">You have no saved ideas yet.</div>`; } else { ideas.forEach(idea => renderIdeaCard(historyContainer, idea, true)); } }
-function clearHistory() { if (getHistory().length === 0) { showToast("History is already empty."); return; } if (confirm('Are you sure you want to delete all your saved history?')) { localStorage.removeItem('lavenderLabHistory'); renderHistory(); showToast('All history has been cleared.'); } }
+function getHistory() { return JSON.parse(localStorage.getItem("lavenderLabHistory") || "[]"); }
+function saveIdeaToHistory(ideaText) { const ideas = getHistory(); if (!ideas.includes(ideaText)) { ideas.unshift(ideaText); localStorage.setItem("lavenderLabHistory", JSON.stringify(ideas)); } }
+function removeIdeaFromHistory(ideaText) { let ideas = getHistory(); ideas = ideas.filter(idea => idea !== ideaText); localStorage.setItem("lavenderLabHistory", JSON.stringify(ideas)); }
+function renderHistory() { const container = document.getElementById("history-output-container"); container.innerHTML = ""; const ideas = getHistory(); if (ideas.length === 0) { container.innerHTML = `<div class="idea-card">You have no saved ideas yet.</div>`; } else { ideas.forEach(idea => renderIdeaCard(container, idea, true)); } }
+function clearHistory() { if (getHistory().length === 0) { showToast("History is already empty."); return; } if (confirm("Delete all history?")) { localStorage.removeItem("lavenderLabHistory"); renderHistory(); showToast("All history cleared."); } }
