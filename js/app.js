@@ -113,7 +113,7 @@ async function getSuggestions(type) {
   exportContainer.innerHTML = "";
 
   try {
-    const response = await fetch("http://localhost:5000/generate", {
+    const response = await fetch("https://lavender-lab1.onrender.com/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
       body: JSON.stringify({ prompt }),
