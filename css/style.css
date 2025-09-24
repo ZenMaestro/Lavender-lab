@@ -688,3 +688,18 @@ label { font-size: 14px; color: var(--lav-200); display: block; margin-bottom: 6
 .hashtag { display: inline-block; background-color: rgba(139, 92, 246, 0.15); color: var(--lav-200); padding: 2px 8px; border-radius: 999px; font-size: 13px; font-weight: 500; margin: 2px; }
 .export-container { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); display: none; justify-content: center; }
 .export-container.visible { display: flex; }
+/* =======================================
+   NEW: Clerk Login Component Centering
+========================================== */
+.login-container {
+  /* Use Flexbox for easy centering */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;   /* Center vertically */
+  
+  /* Make the container fill the entire screen */
+  min-height: 100vh;
+
+  /* Add some padding so the box doesn't touch the edges on small screens */
+  padding: 20px;
+}
