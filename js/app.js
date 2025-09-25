@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (Clerk.user) {
     showMainApp();
   } else {
-    Clerk.mountSignIn(authSection, { afterSignInUrl: "/" });
+    Clerk.mountSignIn(authSection, { fallbackRedirectUrl: "/" });
   }
 
   // React to login/logout
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       mainApp.style.display = "none";
       authSection.innerHTML = "";
-      Clerk.mountSignIn(authSection, { afterSignInUrl: "/" });
+      Clerk.mountSignIn(authSection, { fallbackRedirectUrl: "/" });
     }
   });
 
