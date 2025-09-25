@@ -703,3 +703,19 @@ label { font-size: 14px; color: var(--lav-200); display: block; margin-bottom: 6
   /* Add some padding so the box doesn't touch the edges on small screens */
   padding: 20px;
 }
+/* =======================================
+   Clerk Login Component Centering
+========================================== */
+#auth-section {
+  /* Use Flexbox for perfect centering */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;   /* Center vertically */
+  
+  /* Make the container fill the entire screen when it's the only thing visible */
+  min-height: 100vh;
+
+  /* Add some padding for small screens */
+  padding: 20px;
+  box-sizing: border-box; /* Ensures padding is included in the element's total width and height */
+}
